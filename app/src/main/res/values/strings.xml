@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TapirGaya2</string>
+    <string name="err_msg_name">Please enter Username</string>
+    <string name="err_msg_password">Enter Password</string>
+    <string name="err_msg_required">Valid Input Required</string>
+
+    <string-array name="mode_array">
+        <item>Buka Atap</item>
+        <item>Tutup Atap</item>
+    </string-array>
+
+</resources>

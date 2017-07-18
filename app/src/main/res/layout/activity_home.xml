@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/back">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="30dp">
+
+            <Button
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:text="Keluar"
+                android:id="@+id/exitbtn"
+                android:background="@android:color/transparent"
+                android:layout_gravity="right"
+                android:textColor="@android:color/background_light" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:src="@drawable/logo"
+                android:elevation="0dp"
+                android:tint="@android:color/background_light"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="TAPIR GAYA IOT"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical|center"
+                android:textSize="30dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Atap Pintar Tenaga Surya Berbasis Internet of Things"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical|center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Atap Pintar Tenaga Surya Berbasis Internet of Things"
+            android:textColor="@android:color/white"
+            android:gravity="center_vertical|center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray"
+            android:orientation="horizontal" />
+
+        <TextView
+            android:id="@+id/currentDateTime"
+            android:layout_width="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/background_dark"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="0.14"
+            android:layout_marginBottom="10dp"
+            android:padding="5px"
+            android:gravity="right"
+            android:layout_height="match_parent"
+            android:textColor="@android:color/background_light" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="0dp"
+            android:orientation="horizontal">
+
+
+            <ImageButton
+                android:id="@+id/auto"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:src="@drawable/auto_active" />
+
+            <ImageButton
+                android:id="@+id/man"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/manual_set"
+                android:padding="16dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Spinner
+                android:id="@+id/mode_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="24dp"
+                android:layout_margin="12dp" />
+
+            <Button
+                android:id="@+id/btn_change_mode"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Ubah Mode"
+                android:layout_margin="12dp"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/cond"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Kondisi Atap : Open"
+            android:background="@android:color/background_light"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_margin="12dp"
+            android:padding="10dp"
+            android:gravity="center" />
+
+    </LinearLayout>
+</ScrollView>
