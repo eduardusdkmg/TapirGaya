@@ -118,10 +118,10 @@
                 android:layout_margin="12dp" />
 
             <Button
-                android:id="@+id/btn_change_mode"
+                android:id="@+id/btn_change_status"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Ubah Mode"
+                android:text="Ubah Posisi Atap"
                 android:layout_margin="12dp"/>
 
         </LinearLayout>

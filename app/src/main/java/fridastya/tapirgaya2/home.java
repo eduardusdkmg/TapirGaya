@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -55,9 +56,10 @@ public class home extends AppCompatActivity {
     ImageButton btnMan, btnAuto;
     LinearLayout layoutSpinner;
     TextView currentDateTime, d;
-    Button e;
+    Button e, btnChangeStatusAtap;
     private Boolean modeAtap;
     private Boolean tempProcessInitMode = false;
+    private String resultSpinnerAtap;
     String Username;
 
     private Context context;
@@ -113,7 +115,7 @@ public class home extends AppCompatActivity {
                 5000);
 //        if (tempProcessInitMode)
 
-        Spinner spinner = (Spinner) findViewById(R.id.mode_spinner);
+        final Spinner spinner = (Spinner) findViewById(R.id.mode_spinner);
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.mode_array, android.R.layout.simple_spinner_item);
@@ -121,16 +123,31 @@ public class home extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                resultSpinnerAtap = spinner.getSelectedItem().toString();
+                if (resultSpinnerAtap.equals("Buka Atap")){
+                    resultSpinnerAtap = "1";
+                }else {
+                    resultSpinnerAtap = "0";
+                }
+            }
 
-//        final Handler handler = new Handler();
-//        handler.postDelayed(
-//                new Runnable() {
-//                    public void run() {
-//                            Toast.makeText(getApplicationContext(), modeAtap.toString(), Toast.LENGTH_SHORT).show();
-//                            handler.postDelayed(this, 5000);
-//                    }
-//                },
-//                5000);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // On nothing selected
+            }
+        });
+
+        btnChangeStatusAtap = (Button) findViewById(R.id.btn_change_status);
+        btnChangeStatusAtap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateDataStatusAtap(Username, resultSpinnerAtap);
+//                Toast.makeText(getApplicationContext(), resultSpinnerAtap, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void getDataUser(final String username) {
@@ -183,7 +200,7 @@ public class home extends AppCompatActivity {
                         //You can handle error here if you want
                         hideDialog();
                         error.printStackTrace();
-                        Toast.makeText(context, "The server unreachable", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "The server unreachable", Toast.LENGTH_LONG).show();
 
                     }
                 }) {
@@ -261,6 +278,7 @@ public class home extends AppCompatActivity {
                                 hideDialog();
 //                                gotoHomeActivity();
 
+
                             } else {
                                 hideDialog();
                                 //Displaying an error message on toast
@@ -287,6 +305,73 @@ public class home extends AppCompatActivity {
                 //Adding parameters to request
                 params.put(AppVar.KEY_USERNAME, username);
                 params.put(AppVar.KEY_MODEATAP, finalModeatap);
+
+                //returning parameter
+                return params;
+            }
+        };
+
+        //Adding the string request to the queue
+        Volley.newRequestQueue(this).add(stringRequest);
+
+    }
+
+    private void updateDataStatusAtap(String usernm,  String status){
+        final String username = usernm;
+        String statusatap = status;
+
+       pDialog.setMessage("Update Data ...");
+        showDialog();
+        //Creating a string request
+        final String finalStatusatap = statusatap;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, AppVar.UPDATEDATASTATUS_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("JSON","json response : "+response);
+                            JSONObject json = new JSONObject(response);
+                            //If we are getting success from server
+                            if (response.contains(AppVar.LOGIN_SUCCESS) && response.contains(LOGIN_DATA)) {
+                                hideDialog();
+
+                                String data = json.getString(LOGIN_DATA);
+                                // cek kondisi atap
+                                d.setText(data);
+                                if(Integer.parseInt(d.getText().toString()) == 1) {
+                                    d.setText("Kondisi atap : terbuka");
+//                                    Toast.makeText(getApplicationContext(), "Kondisi atap : terbuka", Toast.LENGTH_LONG).show();
+                                }else {
+                                    d.setText("Kondisi atap : tertutup");
+//                                    Toast.makeText(getApplicationContext(), "Kondisi atap : tertutup", Toast.LENGTH_LONG).show();
+
+                                }
+                            } else {
+                                hideDialog();
+                                //Displaying an error message on toast
+                                Toast.makeText(context, "Invalid process", Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //You can handle error here if you want
+                        hideDialog();
+                        Toast.makeText(getApplicationContext(), "The server unreachable", Toast.LENGTH_LONG).show();
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //Adding parameters to request
+                params.put(AppVar.KEY_USERNAME, username);
+                params.put(AppVar.KEY_KONDISIATAP, finalStatusatap);
 
                 //returning parameter
                 return params;
