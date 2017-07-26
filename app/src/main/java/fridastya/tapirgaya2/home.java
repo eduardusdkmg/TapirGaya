@@ -220,7 +220,7 @@ public class home extends AppCompatActivity {
                 btnAuto.setImageResource(R.drawable.auto_set);
                 btnMan.setImageResource(R.drawable.manual_active);
                 modeAtap = false;
-                updateDataModeAtap(Username, modeAtap);
+                updateDataModeAtap(Username, modeAtap) ;
             }
         });
 
