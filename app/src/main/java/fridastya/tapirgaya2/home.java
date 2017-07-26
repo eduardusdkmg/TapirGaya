@@ -1,17 +1,28 @@
 package fridastya.tapirgaya2;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.Image;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,6 +56,9 @@ public class home extends AppCompatActivity {
     LinearLayout layoutSpinner;
     TextView currentDateTime, d;
     Button e;
+    private Boolean modeAtap;
+    private Boolean tempProcessInitMode = false;
+    String Username;
 
     private Context context;
     private ProgressDialog pDialog;
@@ -51,45 +66,29 @@ public class home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
 
         final Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
+        modeAtap = null;
 
-        setContentView(R.layout.activity_home);
+        currentDateTime = (TextView) findViewById(R.id.currentDateTime);
+        d = (TextView) findViewById(R.id.cond);
 
         layoutSpinner = (LinearLayout) findViewById(R.id.layout_spinner);
         btnMan = (ImageButton) findViewById(R.id.man);
         btnAuto = (ImageButton) findViewById(R.id.auto);
 
-        btnMan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layoutSpinner.setVisibility(View.VISIBLE);
-                btnAuto.setImageResource(R.drawable.auto_set);
-                btnMan.setImageResource(R.drawable.manual_active);
-            }
-        });
-
-        btnAuto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layoutSpinner.setVisibility(View.GONE);
-                btnMan.setImageResource(R.drawable.manual_set);
-                btnAuto.setImageResource(R.drawable.auto_active);
-            }
-        });
-
-        currentDateTime = (TextView) findViewById(R.id.currentDateTime);
-        d = (TextView) findViewById(R.id.cond);
-
         SharedPreferences prefs = getSharedPreferences("UserLogin", MODE_PRIVATE);
-        String Username = prefs.getString("username", null);
+        Username = prefs.getString("username", null);
+
         if (Username != null)
             getDataUser(Username);
         else
             d.setText(Username);
+
         e = (Button) findViewById(R.id.exitbtn);
         e.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +103,16 @@ public class home extends AppCompatActivity {
         // menampilkan data waktu dan hari
         currentDateTime.setText(currentDateTimeString);
 
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        setModeAtap(modeAtap);
+                    }
+                },
+                5000);
+//        if (tempProcessInitMode)
+
         Spinner spinner = (Spinner) findViewById(R.id.mode_spinner);
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -112,6 +121,16 @@ public class home extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+
+//        final Handler handler = new Handler();
+//        handler.postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                            Toast.makeText(getApplicationContext(), modeAtap.toString(), Toast.LENGTH_SHORT).show();
+//                            handler.postDelayed(this, 5000);
+//                    }
+//                },
+//                5000);
     }
 
     private void getDataUser(final String username) {
@@ -130,11 +149,23 @@ public class home extends AppCompatActivity {
                             if (response.contains(AppVar.LOGIN_SUCCESS) && response.contains(LOGIN_DATA)) {
                                 hideDialog();
                                 JSONObject data = json.getJSONObject(LOGIN_DATA);
+                                // cek kondisi atap
                                 d.setText(data.getString("kondisi_atap"));
-                                if(Integer.parseInt(d.getText().toString()) == 1)
+                                if(Integer.parseInt(d.getText().toString()) == 1) {
                                     d.setText("Kondisi atap : terbuka");
-                                else
+//                                    modeAtap = false;
+                                }else {
                                     d.setText("Kondisi atap : tertutup");
+                                }
+                                // cek mode atap
+                                String tempModeAtap = data.getString("mode");
+                                if(Integer.parseInt(tempModeAtap) == 0)
+                                    modeAtap = false;
+                                else
+                                    modeAtap = true;
+
+//                                tempProcessInitMode = true;
+                                hideDialog();
                             } else {
                                 hideDialog();
                                 //Displaying an error message on toast
@@ -169,6 +200,108 @@ public class home extends AppCompatActivity {
 
         //Adding the string request to the queue
         Volley.newRequestQueue(this).add(stringRequest);
+    }
+
+    private void setModeAtap(final Boolean status){
+        if (status){
+            btnAuto.setImageResource(R.drawable.auto_active);
+            layoutSpinner.setVisibility(View.GONE);
+        }else{
+            btnMan.setImageResource(R.drawable.manual_active);
+            layoutSpinner.setVisibility(View.VISIBLE);
+        }
+
+//        Toast.makeText(getApplicationContext(), modeAtap.toString(), Toast.LENGTH_LONG).show();
+
+        btnMan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layoutSpinner.setVisibility(View.VISIBLE);
+                btnAuto.setImageResource(R.drawable.auto_set);
+                btnMan.setImageResource(R.drawable.manual_active);
+                modeAtap = false;
+                updateDataModeAtap(Username, modeAtap);
+            }
+        });
+
+        btnAuto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layoutSpinner.setVisibility(View.GONE);
+                btnMan.setImageResource(R.drawable.manual_set);
+                btnAuto.setImageResource(R.drawable.auto_active);
+                modeAtap = true;
+                updateDataModeAtap(Username, modeAtap);
+            }
+        });
+    }
+
+    private void updateDataModeAtap(String usernm, Boolean status){
+        final String username = usernm;
+        String modeatap = null;
+
+        if (status)
+            modeatap = "1";
+        else
+            modeatap = "0";
+
+        pDialog.setMessage("Update Data ...");
+        showDialog();
+        //Creating a string request
+        final String finalModeatap = modeatap;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, AppVar.UPDATEDATAMODE_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("JSON","json response : "+response);
+                            JSONObject json = new JSONObject(response);
+                            //If we are getting success from server
+                            if (response.contains(AppVar.LOGIN_SUCCESS) && response.contains(LOGIN_DATA)) {
+                                hideDialog();
+                                gotoHomeActivity();
+
+                            } else {
+                                hideDialog();
+                                //Displaying an error message on toast
+                                Toast.makeText(context, "Invalid process", Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //You can handle error here if you want
+                        hideDialog();
+                        Toast.makeText(getApplicationContext(), "The server unreachable", Toast.LENGTH_LONG).show();
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //Adding parameters to request
+                params.put(AppVar.KEY_USERNAME, username);
+                params.put(AppVar.KEY_MODEATAP, finalModeatap);
+
+                //returning parameter
+                return params;
+            }
+        };
+
+        //Adding the string request to the queue
+        Volley.newRequestQueue(this).add(stringRequest);
+
+    }
+
+    private void gotoHomeActivity() {
+        Intent intent = new Intent(getApplicationContext(), home.class);
+        startActivity(intent);
+        finish();
     }
 
     private void showDialog() {

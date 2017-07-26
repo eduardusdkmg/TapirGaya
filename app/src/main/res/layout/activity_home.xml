@@ -92,7 +92,7 @@
                 android:id="@+id/auto"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:src="@drawable/auto_active" />
+                android:src="@drawable/auto_set" />
 
             <ImageButton
                 android:id="@+id/man"
