@@ -72,7 +72,7 @@ public class home extends AppCompatActivity {
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
-        modeAtap = null;
+        modeAtap = true;
 
         currentDateTime = (TextView) findViewById(R.id.currentDateTime);
         d = (TextView) findViewById(R.id.cond);
@@ -259,7 +259,7 @@ public class home extends AppCompatActivity {
                             //If we are getting success from server
                             if (response.contains(AppVar.LOGIN_SUCCESS) && response.contains(LOGIN_DATA)) {
                                 hideDialog();
-                                gotoHomeActivity();
+//                                gotoHomeActivity();
 
                             } else {
                                 hideDialog();
