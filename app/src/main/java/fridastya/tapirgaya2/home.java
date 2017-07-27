@@ -55,12 +55,13 @@ public class home extends AppCompatActivity {
 
     ImageButton btnMan, btnAuto;
     LinearLayout layoutSpinner;
-    TextView currentDateTime, d;
+    TextView currentDateTime, d, txtDegree;
     Button e, btnChangeStatusAtap;
     private Boolean modeAtap;
     private Boolean tempProcessInitMode = false;
     private String resultSpinnerAtap;
     String Username;
+    String celcius  = "\u2103";
 
     private Context context;
     private ProgressDialog pDialog;
@@ -78,6 +79,7 @@ public class home extends AppCompatActivity {
 
         currentDateTime = (TextView) findViewById(R.id.currentDateTime);
         d = (TextView) findViewById(R.id.cond);
+        txtDegree = (TextView) findViewById(R.id.txt_degree);
 
         layoutSpinner = (LinearLayout) findViewById(R.id.layout_spinner);
         btnMan = (ImageButton) findViewById(R.id.man);
@@ -180,7 +182,8 @@ public class home extends AppCompatActivity {
                                     modeAtap = false;
                                 else
                                     modeAtap = true;
-
+                                // set suhu
+                                txtDegree.setText(data.getString("sensor_suhu") + (char) 0x2103);
 //                                tempProcessInitMode = true;
                                 hideDialog();
                             } else {
