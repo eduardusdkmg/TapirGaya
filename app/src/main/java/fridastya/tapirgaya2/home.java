@@ -184,7 +184,6 @@ public class home extends AppCompatActivity {
                                     modeAtap = true;
                                 // set suhu
                                 txtDegree.setText(data.getString("sensor_suhu") + (char) 0x2103);
-//                                tempProcessInitMode = true;
                                 hideDialog();
                             } else {
                                 hideDialog();
