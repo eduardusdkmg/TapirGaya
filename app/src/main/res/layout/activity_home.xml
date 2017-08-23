@@ -109,9 +109,10 @@
 
             <ImageButton
                 android:id="@+id/auto"
-                android:layout_width="160dp"
+                android:layout_width="335dp"
                 android:layout_height="160dp"
-                android:src="@drawable/auto_set" />
+                android:src="@drawable/auto_active"
+                android:background="@color/colorBlue"/>
 
             <ImageButton
                 android:id="@+id/man"
@@ -119,7 +120,8 @@
                 android:layout_height="160dp"
                 android:layout_marginLeft="16dp"
                 android:src="@drawable/manual_set"
-                android:padding="16dp"/>
+                android:padding="16dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
 

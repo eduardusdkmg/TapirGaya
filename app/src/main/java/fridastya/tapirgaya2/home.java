@@ -246,11 +246,11 @@ public class home extends AppCompatActivity {
         btnAuto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layoutSpinner.setVisibility(View.GONE);
-                btnMan.setImageResource(R.drawable.manual_set);
-                btnAuto.setImageResource(R.drawable.auto_active);
-                modeAtap = true;
-                updateDataModeAtap(Username, modeAtap);
+//                layoutSpinner.setVisibility(View.GONE);
+//                btnMan.setImageResource(R.drawable.manual_set);
+//                btnAuto.setImageResource(R.drawable.auto_active);
+//                modeAtap = true;
+//                updateDataModeAtap(Username, modeAtap);
             }
         });
     }
